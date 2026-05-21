@@ -1,9 +1,8 @@
-
 vcpkg_from_github(
   OUT_SOURCE_PATH SOURCE_PATH
   REPO tetherto/qvac-ext-lib-whisper.cpp
-  REF v${VERSION}
-  SHA512 8d265bf6c0dd6e82fbc05d3b083ac0c721df4d75cb536d170eee3a4d810fdc421f79f383682fa6912aa8551a5115c4240105e00070855193df7ec41e4f6a4d83
+  REF f3102199642e78bb2beee6b9e9537604009148b9
+  SHA512 64b102677abae7825985c946b1103cdaefc3f0d0d64f54dbdc5b38ee38a92efd553d33ed5a9f7aa5e509b0292478d8a93dbc8fd54dae7811b84a41d07f4b1c5c
   HEAD_REF master
 )
 
@@ -53,6 +52,63 @@ else()
   list(APPEND PLATFORM_OPTIONS -DGGML_VULKAN=OFF)
 endif()
 
+# Android: ship the same dynamic-backend + CPU-variant recipe llama-cpp
+# already uses on this triplet. GGML_BACKEND_DL=ON makes ggml load the
+# backend implementations as separate .so files at runtime (one per
+# backend, picked by the device caps), so a single APK ships all the
+# variants and the consumer's binary only statically links the dispatcher.
+# GGML_CPU_ALL_VARIANTS + GGML_CPU_REPACK gives one tuned CPU .so per
+# microarch (armv8.0/armv8.2-fp16/armv8.2-fp16+dotprod/armv8.7-i8mm), and
+# COOPMAT[2] are disabled because the Vulkan validation layer's coopmat
+# extensions are unstable on Adreno NDK headers.
+# OpenCL is gated behind the `opencl` feature so non-Adreno Android
+# consumers don't pull in an unused backend.
+# Android dynamic-backend mode: per-microarch CPU + GPU backends ship as
+# MODULE .so files dlopen'd at runtime, while the dispatcher
+# (libwhisper.a, libggml.a, libggml-base.a) stays static — same shape
+# as the speech-stack uses for parakeet-cpp/tts-cpp.
+#
+# The bundled ggml in this port's REF pin carries two commits from
+# QVAC-18993 that make the combo above work end-to-end on Android:
+#   eb63b2b7  ggml : allow GGML_BACKEND_DL with a static core
+#             (removes the FATAL_ERROR + flips PIC/GGML_BUILD on)
+#   3683de4b  ggml-backend : android per-arch CPU variant dlopen fallback
+#             (lets ggml_backend_load_best resolve libggml-cpu-android_armv*_*.so
+#              via Android's in-APK linker when there's no on-disk lib dir)
+# Both will land on tetherto/master via whisper-cpp PR #26 (QVAC-18993);
+# after that ships + a v1.8.4.3 tag is published, the port can re-point
+# to tetherto + drop the temporary Zbig9000 pin above.
+if(VCPKG_TARGET_IS_ANDROID)
+  set(DL_BACKENDS ON)
+  list(APPEND PLATFORM_OPTIONS
+    -DGGML_BACKEND_DL=ON
+    -DGGML_CPU_ALL_VARIANTS=ON
+    -DGGML_CPU_REPACK=ON
+    -DGGML_VULKAN_DISABLE_COOPMAT=ON
+    -DGGML_VULKAN_DISABLE_COOPMAT2=ON)
+  if("opencl" IN_LIST FEATURES)
+    list(APPEND PLATFORM_OPTIONS -DGGML_OPENCL=ON)
+  endif()
+else()
+  set(DL_BACKENDS OFF)
+endif()
+
+# Same spirv-headers include-shim as in the ggml-speech port: upstream
+# ggml v0.10.2 uses spv::* enums unconditionally in ggml-vulkan.cpp, and
+# ggml-vulkan's CMakeLists.txt does not call find_package(SpirvHeaders)
+# so the vcpkg-installed include prefix isn't visible to it by default.
+# MSVC's cl.exe does not understand `-isystem` (it treats the flag as a
+# positional source file argument and tries to compile the include path),
+# so use `/I` there and the GCC/Clang `-isystem` form elsewhere.
+set(SPIRV_HEADERS_CFLAGS "")
+if("vulkan" IN_LIST FEATURES)
+  if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
+    set(SPIRV_HEADERS_CFLAGS "-DCMAKE_CXX_FLAGS=/I${CURRENT_INSTALLED_DIR}/include")
+  else()
+    set(SPIRV_HEADERS_CFLAGS "-DCMAKE_CXX_FLAGS=-isystem ${CURRENT_INSTALLED_DIR}/include")
+  endif()
+endif()
+
 vcpkg_cmake_configure(
   SOURCE_PATH "${SOURCE_PATH}"
   DISABLE_PARALLEL_CONFIGURE
@@ -66,6 +122,7 @@ vcpkg_cmake_configure(
     -DBUILD_SHARED_LIBS=OFF
     -DGGML_BUILD_NUMBER=1
     ${PLATFORM_OPTIONS}
+    ${SPIRV_HEADERS_CFLAGS}
 )
 
 vcpkg_cmake_install()
@@ -82,7 +139,11 @@ vcpkg_copy_pdbs()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
-if (VCPKG_LIBRARY_LINKAGE MATCHES "static")
+if (NOT DL_BACKENDS AND VCPKG_LIBRARY_LINKAGE MATCHES "static")
+  # On dynamic-backend Android the ggml backend .so files live in bin/
+  # alongside the static dispatcher; wiping bin/ here would silently
+  # ship a runtime that loads no backends. Only wipe for true
+  # static-only triplets.
   file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin")
   file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/bin")
 endif()
