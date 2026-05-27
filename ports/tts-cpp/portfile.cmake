@@ -55,6 +55,8 @@ vcpkg_cmake_configure(
         -DTTS_CPP_USE_SYSTEM_GGML=ON
         -DBUILD_SHARED_LIBS=OFF
         -DGGML_NATIVE=OFF
+        -DGGML_BLAS=OFF
+        -DCMAKE_DISABLE_FIND_PACKAGE_BLAS=ON
         -DGGML_OPENMP=OFF
         -DTTS_CPP_OPENMP=OFF
         -DGGML_CCACHE=OFF
