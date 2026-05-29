@@ -2,11 +2,12 @@
 # Sourced from the tts-cpp/ subfolder of qvac-ext-lib-whisper.cpp;
 # consumes the ggml-speech port.
 #
-# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master HEAD 60dc1504
-# (`Merge pull request #29 from GustavoA1604/master`), which lands
-# 907f3151 -- the "tts-cpp: Add dynamic backend selection for android"
-# change: registry-only `init_gpu_backend()` + Adreno tier policy
-# + EngineOptions::backends_dir / opencl_cache_dir.
+# Pinned at tetherto/qvac-ext-lib-whisper.cpp@feat/tts-multilingual-23-langs
+# HEAD d3db516d -- the 23-language multilingual support PR (runtime
+# MeCab/Cangjie paths via EngineOptions; zh excluded from
+# supported_languages() pending Cangjie rework). Temporary pin for CI
+# validation of the tts-ggml multilingual sweep; revert to a master
+# commit once the multilingual PR lands.
 
 set(VCPKG_POLICY_MISMATCHED_NUMBER_OF_BINARIES enabled)
 set(VCPKG_BUILD_TYPE release)
@@ -14,8 +15,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF 60dc1504
-    SHA512 2273e95bb7fa9a4db757f675627529094d8665baffc0c1c1783a65c7670222b779ae39667325fe870dccd92037faacb44502700e923bde73149eac08e6ab8eff
+    REF d3db516d2dfd8b0cf629888e33f9b8b014568d64
+    SHA512 72ac2d1b4f5bb11a869f81a5a135f9167ceb19db6b117e05205c55104d8cf7cab6031671c735dad8b8cbc2071b0f1d22f96f01f607e2a285b78f55b4141d53e8
     HEAD_REF master
 )
 
