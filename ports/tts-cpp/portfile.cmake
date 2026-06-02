@@ -3,11 +3,14 @@
 # consumes the ggml-speech port.
 #
 # Pinned at tetherto/qvac-ext-lib-whisper.cpp@feat/tts-multilingual-23-langs
-# HEAD 2cd73c63 -- the 23-language multilingual support PR (runtime
+# HEAD c8b140c1 -- the 23-language multilingual support PR (runtime
 # MeCab/Cangjie paths via EngineOptions; zh excluded from
 # supported_languages() pending Cangjie rework) plus the ogad-tether
 # review fixes (mtl_tokenizer path-mutex + init-flag ordering, MeCab
-# PRIVATE link/define, Cangjie script commit pin, header include hygiene).
+# PRIVATE link/define, Cangjie script commit pin, header include hygiene)
+# and the jpgaribotti review fixes (MeCabTagger::convert decode-mutex
+# against the shared-tagger data race; mecab_tagger()/cangjie_table()
+# memoize-on-success so a failed/late dict path is no longer sticky-null).
 # Temporary pin for CI validation of the tts-ggml multilingual sweep;
 # revert to a master commit once the multilingual PR lands.
 
@@ -17,8 +20,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF 2cd73c63550925538f90b1293eef8e0b7b3e6acc
-    SHA512 b3ea4a37f27f58eb726ba92a469aa62bca611b362ac816dec5aca9feb87faec778e602fe9bdbcd2b691338575a720bfd4af6c067032b9294c8a8c556df90a622
+    REF c8b140c1ade5b180e670ffed68647f8fc4610afd
+    SHA512 15409cbbdb532a25c360192e608fe8b90995fe1e51ab7d6dccad5ee920fb47cd577cbf3e0d3c3eec6ca04cfe99936c0df526cfd4234e29256825d98a9262404e
     HEAD_REF master
 )
 
