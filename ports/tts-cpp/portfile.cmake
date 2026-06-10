@@ -2,11 +2,14 @@
 # Sourced from the tts-cpp/ subfolder of qvac-ext-lib-whisper.cpp;
 # consumes the ggml-speech port.
 #
-# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master HEAD c1fd35d8
-# (Merge PR #19: TTS GGML support for all 23 multilingual languages --
-# MeCab/Cangjie tokenization, thread-safe lazy init), on top of the
-# S3Gen spk_embed_affine fix (PR #37), the v1.8.5 sync (PR #33) and the
-# PR #29 Android dynamic backend selection already on this line.
+# Pinned at tetherto/qvac-ext-lib-whisper.cpp@QVAC-19305/tts-cpp-supertonic3
+# commit 019d75bf (QVAC-19305: Supertonic v3 support -- 31 languages, 8-head
+# text cross-attention, stable name aliases + bridge for the renumbered v3
+# ONNX node ids, v1/v2 GGUF backward-compat, and a convert-time bridge
+# assertion). Branch pin for CI / downstream addon validation ahead of merge
+# to master. Supersedes the c1fd35d8 master pin (PR #19 multilingual 23
+# languages, PR #37 S3Gen spk_embed_affine fix, PR #33 v1.8.5 sync, PR #29
+# Android dynamic backend selection).
 
 set(VCPKG_POLICY_MISMATCHED_NUMBER_OF_BINARIES enabled)
 set(VCPKG_BUILD_TYPE release)
@@ -14,8 +17,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF c1fd35d81a01bb433cff2779d704816155c1b297
-    SHA512 5220e542dc15d30c7103f89bd9d38a2a0ae82e82a5338afa381e982b86bc616aeb9bf18d507d027dee60735d620398a939c0acf1cffd4232b8efd371321cbb12
+    REF 019d75bfceee72001317be35383433186b4c975b
+    SHA512 19e526f1ebd5ac3cb479b936e08678cea925a7d6d5778cbd5026f978af096e66fb2609aad870bc5720d8c6c91f16a8096afc8a3afc49a9e17e6de3d5abea5c13
     HEAD_REF master
 )
 

@@ -1,7 +1,7 @@
 {
   "name": "tts-cpp",
-  "version-date": "2026-06-03",
-  "description": "Text-to-speech inference in pure C++/ggml. Ships Resemble Chatterbox (Turbo + Multilingual variants) and Supertonic engines under a unified Engine API. Sourced from tetherto/qvac-ext-lib-whisper.cpp's tts-cpp/ subfolder (including the Android dynamic backend selection landed in PR #29); consumes the ggml-speech port.",
+  "version-date": "2026-06-10",
+  "description": "Text-to-speech inference in pure C++/ggml. Ships Resemble Chatterbox (Turbo + Multilingual variants) and Supertonic engines under a unified Engine API. Sourced from tetherto/qvac-ext-lib-whisper.cpp's tts-cpp/ subfolder. This pin brings QVAC-19305 Supertonic v3 support: 31 languages, 8-head text cross-attention, stable name aliases + bridge for the renumbered v3 ONNX node ids, v1/v2 GGUF backward-compat, and a convert-time bridge assertion. Branch pin for CI / addon validation ahead of merge to master. Consumes the ggml-speech port.",
   "homepage": "https://github.com/tetherto/qvac-ext-lib-whisper.cpp/tree/master/tts-cpp",
   "license": "MIT",
   "dependencies": [
