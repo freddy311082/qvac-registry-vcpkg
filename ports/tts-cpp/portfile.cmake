@@ -3,13 +3,15 @@
 # consumes the ggml-speech port.
 #
 # Pinned at tetherto/qvac-ext-lib-whisper.cpp@QVAC-19305/tts-cpp-supertonic3
-# commit 019d75bf (QVAC-19305: Supertonic v3 support -- 31 languages, 8-head
+# commit 76536689 (QVAC-19305: Supertonic v3 support -- 31 languages, 8-head
 # text cross-attention, stable name aliases + bridge for the renumbered v3
 # ONNX node ids, v1/v2 GGUF backward-compat, and a convert-time bridge
-# assertion). Branch pin for CI / downstream addon validation ahead of merge
-# to master. Supersedes the c1fd35d8 master pin (PR #19 multilingual 23
-# languages, PR #37 S3Gen spk_embed_affine fix, PR #33 v1.8.5 sync, PR #29
-# Android dynamic backend selection).
+# assertion). This pin adds the v3 numerical-parity fixes (ConvNeXt dilations
+# + classifier-free guidance) and the Supertonic-aware quantization work that
+# makes q4_0/q8_0 GGUFs build and run (pwconv squeeze/expand surgery + Q4_0
+# dequant-at-load). Branch pin for CI / downstream addon validation ahead of
+# merge to master. Supersedes the 019d75bf pin (v3 support before the parity
+# and quantization fixes).
 
 set(VCPKG_POLICY_MISMATCHED_NUMBER_OF_BINARIES enabled)
 set(VCPKG_BUILD_TYPE release)
@@ -17,8 +19,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF 019d75bfceee72001317be35383433186b4c975b
-    SHA512 19e526f1ebd5ac3cb479b936e08678cea925a7d6d5778cbd5026f978af096e66fb2609aad870bc5720d8c6c91f16a8096afc8a3afc49a9e17e6de3d5abea5c13
+    REF 76536689e60679b3f28ef4774a3aea11d51555a1
+    SHA512 6715ea5d4d2178dc292829cf21e30574f2599b791385bee71ba3e804204e39a2177710a347ff2e0511eacd84c6ccab3679e2b99c1cb3987c3bc88f59b547b09e
     HEAD_REF master
 )
 
