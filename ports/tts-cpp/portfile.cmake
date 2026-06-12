@@ -2,11 +2,15 @@
 # Sourced from the tts-cpp/ subfolder of qvac-ext-lib-whisper.cpp;
 # consumes the ggml-speech port.
 #
-# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master HEAD 1c75d6e9
-# (QVAC-19253 Supertonic + Chatterbox on Adreno-Vulkan, PR #41), layered on
-# top of the previous 128dae42 pin (PR #31 supertonic_optimizations). Moves
-# with whisper-cpp and parakeet-cpp so all three share the same master commit
-# and archive SHA512.
+# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master HEAD 24eeb028
+# (QVAC-19305 Supertonic v3 support, PR #42), layered on top of the previous
+# 1c75d6e9 pin (QVAC-19253 Supertonic + Chatterbox on Adreno-Vulkan, PR #41).
+# Adds Supertonic v3: 31 languages, 8-head text cross-attention, stable name
+# aliases + bridge for the renumbered v3 ONNX node ids, v1/v2 GGUF backward-
+# compat, and a convert-time bridge assertion. Lands the v3 numerical-parity
+# fixes (ConvNeXt dilations + classifier-free guidance) and the Supertonic-
+# aware quantization that makes q4_0/q8_0 GGUFs build and run (pwconv squeeze/
+# expand surgery + Q4_0 dequant-at-load).
 
 set(VCPKG_POLICY_MISMATCHED_NUMBER_OF_BINARIES enabled)
 set(VCPKG_BUILD_TYPE release)
@@ -14,8 +18,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF 1c75d6e9d5f07a50d6b0e8b6cff48444df4594b3
-    SHA512 bd74d7831f3fdaad9bc5e366662e8c49a847db3ed7f66c4a8a94c10f1f7eee7c8fea58f91f1c8bc43da3ef64e1a4510aef6e376b5c7242711e256e14701f9e07
+    REF 24eeb0281d672416249d22ce1fb5c7ba69c92e21
+    SHA512 c66cd54900d6c3536adee0f4e92726c432d42f01b1f8a949bb1dfd9002eca4347d0de4e59609b7f5522fe3bb7b7cae5e42bc6c06279e43c125808e9bdf7d523d
     HEAD_REF master
 )
 
