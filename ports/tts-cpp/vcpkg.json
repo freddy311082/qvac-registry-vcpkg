@@ -1,7 +1,7 @@
 {
   "name": "tts-cpp",
-  "version-date": "2026-06-11",
-  "description": "Text-to-speech inference in pure C++/ggml. Ships Resemble Chatterbox (Turbo + Multilingual variants) and Supertonic engines under a unified Engine API. Sourced from tetherto/qvac-ext-lib-whisper.cpp's tts-cpp/ subfolder. This pin brings QVAC-19305 Supertonic v3 support: 31 languages, 8-head text cross-attention, stable name aliases + bridge for the renumbered v3 ONNX node ids, v1/v2 GGUF backward-compat, and a convert-time bridge assertion. It also lands the v3 numerical-parity fixes (ConvNeXt dilations + classifier-free guidance) and Supertonic-aware quantization so q4_0/q8_0 GGUFs build and run (pwconv squeeze/expand surgery + Q4_0 dequant-at-load). Branch pin for CI / addon validation ahead of merge to master. Consumes the ggml-speech port.",
+  "version-date": "2026-06-12",
+  "description": "Text-to-speech inference in pure C++/ggml. Ships Resemble Chatterbox (Turbo + Multilingual variants) and Supertonic engines under a unified Engine API. Sourced from tetherto/qvac-ext-lib-whisper.cpp's tts-cpp/ subfolder. This pin tracks master after PR #42 merged (QVAC-19305 Supertonic v3 support: 31 languages, 8-head text cross-attention, stable name aliases + bridge for the renumbered v3 ONNX node ids, v1/v2 GGUF backward-compat, and a convert-time bridge assertion). It also lands the v3 numerical-parity fixes (ConvNeXt dilations + classifier-free guidance) and Supertonic-aware quantization so q4_0/q8_0 GGUFs build and run (pwconv squeeze/expand surgery + Q4_0 dequant-at-load). Consumes the ggml-speech port.",
   "homepage": "https://github.com/tetherto/qvac-ext-lib-whisper.cpp/tree/master/tts-cpp",
   "license": "MIT",
   "dependencies": [

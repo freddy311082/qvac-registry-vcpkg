@@ -2,16 +2,15 @@
 # Sourced from the tts-cpp/ subfolder of qvac-ext-lib-whisper.cpp;
 # consumes the ggml-speech port.
 #
-# Pinned at tetherto/qvac-ext-lib-whisper.cpp@QVAC-19305/tts-cpp-supertonic3
-# commit 76536689 (QVAC-19305: Supertonic v3 support -- 31 languages, 8-head
-# text cross-attention, stable name aliases + bridge for the renumbered v3
-# ONNX node ids, v1/v2 GGUF backward-compat, and a convert-time bridge
-# assertion). This pin adds the v3 numerical-parity fixes (ConvNeXt dilations
-# + classifier-free guidance) and the Supertonic-aware quantization work that
-# makes q4_0/q8_0 GGUFs build and run (pwconv squeeze/expand surgery + Q4_0
-# dequant-at-load). Branch pin for CI / downstream addon validation ahead of
-# merge to master. Supersedes the 019d75bf pin (v3 support before the parity
-# and quantization fixes).
+# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master commit 24eeb028, the merge
+# of PR #42 (QVAC-19305: Supertonic v3 support -- 31 languages, 8-head text
+# cross-attention, stable name aliases + bridge for the renumbered v3 ONNX node
+# ids, v1/v2 GGUF backward-compat, and a convert-time bridge assertion). Lands
+# the v3 numerical-parity fixes (ConvNeXt dilations + classifier-free guidance)
+# and the Supertonic-aware quantization work that makes q4_0/q8_0 GGUFs build
+# and run (pwconv squeeze/expand surgery + Q4_0 dequant-at-load). Now that #42
+# is merged this pin tracks master instead of the feature branch. Supersedes
+# the 76536689 branch pin.
 
 set(VCPKG_POLICY_MISMATCHED_NUMBER_OF_BINARIES enabled)
 set(VCPKG_BUILD_TYPE release)
@@ -19,8 +18,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF 76536689e60679b3f28ef4774a3aea11d51555a1
-    SHA512 6715ea5d4d2178dc292829cf21e30574f2599b791385bee71ba3e804204e39a2177710a347ff2e0511eacd84c6ccab3679e2b99c1cb3987c3bc88f59b547b09e
+    REF 24eeb0281d672416249d22ce1fb5c7ba69c92e21
+    SHA512 c66cd54900d6c3536adee0f4e92726c432d42f01b1f8a949bb1dfd9002eca4347d0de4e59609b7f5522fe3bb7b7cae5e42bc6c06279e43c125808e9bdf7d523d
     HEAD_REF master
 )
 
