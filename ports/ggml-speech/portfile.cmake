@@ -110,6 +110,25 @@ if("vulkan" IN_LIST FEATURES)
     )
 endif()
 
+# ggml-metal's residency-set collection asserts `[rsets->data count] == 0`
+# in ggml_metal_rsets_free (called from ggml_metal_device_free). On macOS 15+
+# with residency sets active (the default), any Metal buffer that outlives the
+# device -- e.g. due to C++ static-destructor ordering at process exit -- leaves
+# its set registered and aborts the process via SIGABRT after everything has
+# otherwise run. Upstream treats this as "you didn't free your contexts first",
+# but for a host process that tears down at exit() it's a teardown-ordering
+# artefact, not a real leak. Patch ggml_metal_rsets_free to stop the keep-alive
+# heartbeat first and then drain any lingering sets (with a warning) instead of
+# asserting. Keeps residency sets fully enabled; only removes the hard abort.
+# TODO: push the equivalent fix upstream and drop this patch.
+if("metal" IN_LIST FEATURES)
+    vcpkg_apply_patches(
+        SOURCE_PATH "${SOURCE_PATH}"
+        PATCHES
+            "${CMAKE_CURRENT_LIST_DIR}/patches/0002-ggml-metal-rsets-free-drain-on-teardown.patch"
+    )
+endif()
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
