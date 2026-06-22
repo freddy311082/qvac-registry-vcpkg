@@ -4,6 +4,10 @@
       "baseline": "onnxruntime",
       "port-version": 1
     },
+    "benchmark": {
+      "baseline": "1.9.1",
+      "port-version": 0
+    },
     "bergamot-translator": {
       "baseline": "1.0.1",
       "port-version": 0
@@ -126,7 +130,7 @@
     },
     "xnnpack": {
       "baseline": "onnxruntime",
-      "port-version": 0
+      "port-version": 1
     }
   }
 }
