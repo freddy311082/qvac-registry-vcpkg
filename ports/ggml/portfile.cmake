@@ -23,19 +23,21 @@
 # Pulls from the tetherto/qvac-ext-ggml GitHub branch 2026-06-06
 # (REF pinned to that branch's tip commit for reproducibility).
 #
-# 805e8e1b is the tip of 2026-06-06 — the merge of #23 (2026-06-06-ltx) into the
-# canonical 2026-06-06 line. On top of leejet/ggml v0.12.0 it carries the full
-# merged compute set: the reviewed Metal/video kernels (IM2COL_3D/PAD, fused
-# Flux RoPE, direct conv2d), the coopmat1 flash-attn f32-accumulation fixes, the
-# ggml_graph_leaf/leafs/n_leafs public API export, and the ggml_conv_1d/dw
-# im2col-type fix (derive from a->type like conv_2d) so F32 conv weights
-# (e.g. LTX audio VAE) flow through the F32 path instead of aborting on the CPU
-# im2col_f16 F16 assert.
+# ae42bd74 is the tip of 2026-06-06 — the merge of #31 (2026-06-06-deps) into the
+# canonical 2026-06-06 line. #31 wires spirv-headers into the ggml-vulkan target
+# (find_package(SPIRV-Headers) + link the imported target) so the Vulkan backend
+# finds <spirv/unified1/spirv.hpp>; this replaces the package-local overlay patch.
+# On top of leejet/ggml v0.12.0 it carries the full merged compute set: the
+# reviewed Metal/video kernels (IM2COL_3D/PAD, fused Flux RoPE, direct conv2d),
+# the coopmat1 flash-attn f32-accumulation fixes, the ggml_graph_leaf/leafs/
+# n_leafs public API export, and the ggml_conv_1d/dw im2col-type fix (derive from
+# a->type like conv_2d) so F32 conv weights (e.g. LTX audio VAE) flow through the
+# F32 path instead of aborting on the CPU im2col_f16 F16 assert.
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO tetherto/qvac-ext-ggml
-    REF 805e8e1b0329c9a6a11968bb31a81b03362a9f35
-    SHA512 bc66b383f81ed92ac8097292ec806f232517efca536a16d95f0cf59887438840d46e1e218074c2be393dc81217ced36691555c0ed999180d7030d3d4e2ae5d0d
+    REF ae42bd744155ce386a8f25e1972e43bc0cb5d773
+    SHA512 c488df7b1df38c640050e13eff2d5155b1f3e03411b06b75f6ff142f3a7b82bf0cd1cd83d9e487d39ca842b8f7b46de734d45b5e6c7bf9832637eee6737c1fe8
 )
 
 # --- GPU feature flags ---
