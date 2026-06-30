@@ -2,6 +2,22 @@
 # Sourced from the tts-cpp/ subfolder of qvac-ext-lib-whisper.cpp;
 # consumes the ggml-speech port.
 #
+# QVAC-21483 [TTS GGML] output-frequency selection
+# (qvac-ext-lib-whisper.cpp PR #69): EngineOptions::output_sample_rate on both
+# the Chatterbox and Supertonic engines (plus the public tts_cpp resampler and
+# CLI flags). The vocoder still emits at the model's native rate; when a
+# positive rate is requested the engine resamples the final PCM once (batch) or
+# drives a single utterance-spanning OutputResampler (streaming) so the streamed
+# output is bit-identical to the batch resample -- no per-chunk seams or length
+# drift. 0 keeps the native rate (zero behaviour change). This is the engine API
+# the tts-ggml addon calls to honour the SDK output-rate option.
+#
+# QVAC-21335 [TTS GGML] MeCab support for Chatterbox MTL Japanese
+# (qvac-ext-lib-whisper.cpp PR #72): tts-cpp detects vcpkg's include/mecab
+# header layout, guards MSVC builds against Windows min/max macros, and links
+# the mecab CMake target so static Windows builds propagate the right MeCab
+# compile definitions.
+#
 # QVAC-16579 [TTS GGML] LavaSR neural speech enhancement
 # (qvac-ext-lib-whisper.cpp PR #68): opt-in CPU/GGML post-process that
 # bandwidth-extends synthesized PCM to 48 kHz via the LavaSR Vocos enhancer
@@ -21,9 +37,14 @@
 # bit-identical.  On-device the chatterbox first-test peak drops 3184 -> 2772 MB
 # (under the ~3 GB budget); warm tests unchanged.
 #
-# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master HEAD 4c8767a2 (PR #68
-# merged: QVAC-16579 LavaSR enhancer, described above -- exactly one commit
-# ahead of the prior 586268bf pin, so it carries the ARM Mali fix below).
+# Pinned at tetherto/qvac-ext-lib-whisper.cpp@master HEAD ce9ee96f (PR #69
+# merged: QVAC-21483 output-frequency selection, described above).
+# Layered on the 28f37eae pin (PR #72 merged: QVAC-21335 MeCab support for
+# Chatterbox MTL Japanese, described above -- exactly one commit behind, so it
+# carries the MeCab support).
+# Layered on the 4c8767a2 pin (PR #68 merged: QVAC-16579 LavaSR enhancer,
+# described above -- exactly one commit ahead of the prior 586268bf pin, so it
+# carries the ARM Mali fix below).
 # Layered on the 586268bf pin (PR #67 merged: QVAC-20557 run Chatterbox
 # correctly on ARM Mali Vulkan via an is_arm_mali-gated unfused CFM attention
 # -- zero change off ARM Mali, CPU output byte-identical), the 46921668 pin
@@ -61,8 +82,8 @@ set(VCPKG_BUILD_TYPE release)
 vcpkg_from_github(
     OUT_SOURCE_PATH WHISPER_CPP_SRC
     REPO tetherto/qvac-ext-lib-whisper.cpp
-    REF 4c8767a2cb98f91bb6dd8ce240cc5863231b1eb1
-    SHA512 760ab5282c4c27a445578cafb0e4647edabe1c218c00c332dea6207e402c6731a863774ab0dbc1e2846a482742632bf00d17b6b256090335a472fbf44bb54f3b
+    REF ce9ee96f42bf8c4df9bb627afe520a50b22eafd9
+    SHA512 e3c9d3b427b9a9045ebc6333c83e8806d2b83b0b14bfd09f2c21a8096ae47988f4ee41e3fc9ac9a667c364d1a7368128fc6e2981cbd26d8ee073ae1dcbd6308f
     HEAD_REF master
 )
 
