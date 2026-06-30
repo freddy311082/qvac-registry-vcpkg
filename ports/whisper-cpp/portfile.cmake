@@ -1,13 +1,13 @@
-# whisper-cpp: pinned at tetherto/qvac-ext-lib-whisper.cpp@QVAC-21582/whisper-upstream-v1.9.1
-# 25379c52 (QVAC-21582 pull upstream whisper.cpp v1.9.1). CI test branch; normally
-# this port moves together with parakeet-cpp and tts-cpp so all three registry
+# whisper-cpp: pinned at tetherto/qvac-ext-lib-whisper.cpp@master
+# cb91a378 (QVAC-21582 — Pull latest from upstream whisper.cpp (v1.9.1) (#73)).
+# This port moves together with parakeet-cpp and tts-cpp so all three registry
 # ports source the same master commit and the same archive SHA512.
 #
 vcpkg_from_github(
   OUT_SOURCE_PATH SOURCE_PATH
   REPO tetherto/qvac-ext-lib-whisper.cpp
-  REF 25379c5241438e8ff56db2e1d2de5df0c7ac7e87
-  SHA512 05f1f97c470c6d9a485f6a7fd0e066816540c57eb321efb086f1dfe96fe3fe5bbcc2620b9f8daf385379eb9c7ff9006d15df09b6082512f8f7699e2cda006cf6
+  REF cb91a37862c52e7954539512e632819e9358585d
+  SHA512 a2ffbb061dbab4741ac05967eb9b348d200a9e2e2b44532f82534ef01566fe37b74d10735d380f8bf32a8e7c662a3c05be62ae662c018dce828d63f836461d6b
   HEAD_REF master
   PATCHES
     patches/0001-move-gnuinstalldirs-before-add-subdirectory-src.patch
